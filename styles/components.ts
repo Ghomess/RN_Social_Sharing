@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { StyleSheet } from "react-native";
+import { StyleSheet, StatusBar } from "react-native";
 
 export const styleComponents = (colors: typeof Colors) =>
 	StyleSheet.create({
@@ -15,6 +15,12 @@ export const styleComponents = (colors: typeof Colors) =>
 		},
 		SafeAreaView: {
 			flex: 1,
+			paddingTop: StatusBar.currentHeight + 10,
 			backgroundColor: colors().background,
+		},
+		Image: {
+			width: 300,
+			height: 300,
+			borderRadius: 10,
 		},
 	});

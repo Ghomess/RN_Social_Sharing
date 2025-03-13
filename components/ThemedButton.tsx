@@ -5,37 +5,27 @@ import { ThemedText } from "./ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useState } from "react";
 
-export type ThemedViewProps = PressableProps & {
-	text: string;
-};
-
-export function ThemedButton({ style, text, ...otherProps }: ThemedViewProps) {
+export function ThemedButton({ style, ...otherProps }: PressableProps) {
 	const colors = Colors();
 
 	const [pressed, setPressed] = useState(false);
 
 	return (
 		<Pressable
-			style={({ pressed }) => ({
-				...(pressed
-					? { backgroundColor: colors.buttonSelected }
-					: { backgroundColor: colors.buttonDefault }),
-				...styles(Colors).container,
-			})}
+			style={({ pressed }) => [
+				styles(Colors).container,
+				{
+					backgroundColor: pressed
+						? colors.buttonSelected
+						: colors.buttonDefault,
+				},
+				style,
+			]}
 			onPressIn={() => setPressed(true)}
 			onPressOut={() => setPressed(false)}
 			{...otherProps}
 		>
-			<ThemedText
-				style={{
-					backgroundColor: pressed
-						? colors.buttonSelected
-						: colors.buttonDefault,
-					...styles(Colors).text,
-				}}
-			>
-				{text}
-			</ThemedText>
+			{otherProps.children}
 		</Pressable>
 	);
 }
@@ -45,10 +35,7 @@ const styles = (colors: typeof Colors) =>
 		container: {
 			justifyContent: "center",
 			alignItems: "center",
-			borderRadius: 10,
-		},
-		text: {
-			padding: 10,
-			color: colors().text,
+			borderRadius: 100,
+			margin: 10,
 		},
 	});

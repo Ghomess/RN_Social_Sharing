@@ -7,35 +7,41 @@ import {
 	Share,
 } from "react-native";
 
-import { HelloWave } from "@/components/HelloWave";
+import { Emoji } from "@/components/Emoji";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { styleComponents } from "@/styles/components";
 
 import { Colors } from "@/constants/Colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemedButton } from "@/components/ThemedButton";
+import { fetchDogPhotos } from "@/api/fetchDogPhotos";
+import { ShareablePhoto } from "@/components/ShareablePhoto";
 
 const url = "https://www.google.com";
 
-const onShare = async () => {
-	try {
-		const result = await Share.share({ message: "Google: " + "\n" + url });
-		if (result.action === Share.sharedAction) {
-			if (result.activityType) {
-				console.log("result.activityType: ", result.activityType);
-			} else {
-				console.log("shared");
-			}
-		} else if (result.action === Share.dismissedAction) {
-			console.log("dismissed");
-		}
-	} catch (error) {
-		console.log(error);
-	}
-};
-
 export default function HomeScreen() {
+	const [dogPhotos, setDogPhotos] = useState<Array<string>>([]);
+
+	const getDogPhoto = async () => {
+		const response = await fetchDogPhotos();
+		console.log("Response:", response); // Add this log
+		setDogPhotos([...dogPhotos, response]);
+	};
+
+	useEffect(() => {
+		const getDogPhotos = async () => {
+			const response = await fetchDogPhotos();
+			console.log("Response:", response); // Add this log
+			setDogPhotos([...dogPhotos, response]);
+		};
+		getDogPhotos();
+	}, []);
+
+	useEffect(() => {
+		console.log("dogPhotos:", dogPhotos[0]);
+	}, [dogPhotos]);
+
 	return (
 		<SafeAreaView style={styleComponents(Colors).SafeAreaView}>
 			<ScrollView
@@ -46,11 +52,9 @@ export default function HomeScreen() {
 			>
 				<ThemedView style={styles.titleContainer}>
 					<ThemedText type="title">Welcome!</ThemedText>
-					<HelloWave />
+					<Emoji emoji="👋" />
 				</ThemedView>
-				<ThemedView style={styles.titleContainer}>
-					<ThemedButton onPress={onShare} text="Press to Share" />
-				</ThemedView>
+				<ShareablePhoto source={dogPhotos[0]} />
 			</ScrollView>
 		</SafeAreaView>
 	);
