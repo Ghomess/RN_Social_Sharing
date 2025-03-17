@@ -1,19 +1,34 @@
 import { Image, StyleSheet } from "react-native";
 import { ThemedView } from "./ThemedView";
 import { ThemedButton } from "./ThemedButton";
-import { onShare } from "@/features/share/onShareFunction";
 import { styleComponents } from "@/styles/components";
 import { Colors } from "@/constants/Colors";
 import { Emoji } from "./Emoji";
 
-export const ShareablePhoto = ({ source }: { source: string }) => {
-	console.log("Source:", source);
+export const ShareablePhoto = ({
+	source,
+	onPress,
+}: {
+	source: string;
+	onPress: () => void;
+}) => {
 	return (
-		<ThemedView style={styles.container}>
-			<Image source={{ uri: source }} style={styleComponents(Colors).Image} />
-			<ThemedButton onPress={() => onShare(source)} style={styles.button}>
-				<Emoji emoji="🔗" emojiStyle={{ fontSize: 25, padding: 10 }} />
-			</ThemedButton>
+		<ThemedView
+			style={{
+				flex: 1,
+				justifyContent: "center",
+				alignItems: "center",
+				alignContent: "center",
+				alignSelf: "center",
+				backgroundColor: Colors().background,
+			}}
+		>
+			<ThemedView style={styles.container}>
+				<Image source={{ uri: source }} style={styleComponents(Colors).Image} />
+				<ThemedButton onPress={onPress} style={styles.share}>
+					<Emoji emoji="🔗" emojiStyle={{ fontSize: 25, padding: 10 }} />
+				</ThemedButton>
+			</ThemedView>
 		</ThemedView>
 	);
 };
@@ -25,7 +40,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		borderRadius: 10,
 	},
-	button: {
+	share: {
 		position: "absolute",
 		top: 0,
 		right: 0,
