@@ -4,6 +4,8 @@ import {
 	SafeAreaView,
 	TouchableOpacity,
 	Modal,
+	View,
+	Button,
 } from "react-native";
 
 import { Emoji } from "@/components/Emoji";
@@ -15,8 +17,10 @@ import { Colors } from "@/constants/Colors";
 import { useEffect, useState } from "react";
 
 import { fetchDogPhotos } from "@/api/fetchDogPhotos";
-import { ShareablePhoto } from "@/components/ShareablePhoto";
+
 import { onShare } from "@/features/share/onShareFunction";
+import { Photo } from "@/components/Photo";
+import { ShareCard } from "@/components/ShareCard";
 
 export default function HomeScreen() {
 	const [dogPhotos, setDogPhotos] = useState<Array<string>>([]);
@@ -33,17 +37,18 @@ export default function HomeScreen() {
 	}, []);
 
 	const openModal = (photo: string) => {
+		console.log("openModal: ", photo);
 		setSelectedPhoto(photo);
 		setModal(true);
 	};
 
 	const closeModal = () => {
+		console.log("closeModal");
 		setSelectedPhoto(null);
 		setModal(false);
 	};
-
-	return (
-		<SafeAreaView style={styleComponents(Colors).SafeAreaView}>
+	{
+		/* <SafeAreaView style={styleComponents(Colors).SafeAreaView}>
 			<ScrollView
 				style={styleComponents(Colors).ScrollViewContainer}
 				contentContainerStyle={
@@ -55,36 +60,45 @@ export default function HomeScreen() {
 					<Emoji emoji="👋" />
 				</ThemedView>
 
-				<ShareablePhoto
-					source={dogPhotos[0]}
-					onPress={() => openModal(dogPhotos[0])}
-				/>
-
-				{/* Modal Implementation */}
-				<Modal
-					animationType="slide"
-					transparent={true}
-					visible={modal}
-					onRequestClose={closeModal}
-				>
-					<ThemedView style={styles(Colors).modalOverlay}>
-						<ThemedView style={styles(Colors).modalContent}>
-							<TouchableOpacity
-								onPress={closeModal}
-								style={styles(Colors).closeButton}
-							>
-								<ThemedText type="title">Close</ThemedText>
-							</TouchableOpacity>
-							{selectedPhoto && (
-								<ShareablePhoto
-									source={selectedPhoto}
-									onPress={() => onShare(selectedPhoto)}
-								/>
-							)}
-						</ThemedView>
-					</ThemedView>
-				</Modal>
+				<Photo source={dogPhotos[0]} onPress={() => openModal(dogPhotos[0])} />
+				<ShareCard visible={modal} onClose={closeModal} />
 			</ScrollView>
+		</SafeAreaView> */
+	}
+	{
+		/* <TouchableOpacity
+				onPress={closeModal}
+				style={{
+					flex: 1,
+					position: "absolute",
+					display: modal ? "flex" : "none",
+					backgroundColor: "red",
+
+					bottom: 0,
+
+					width: "100%",
+					height: "100%",
+				}}
+			>
+				{selectedPhoto && (
+					<ShareCard selectedPhoto={selectedPhoto} onClose={closeModal} />
+				)}
+			</TouchableOpacity> */
+	}
+
+	return (
+		<SafeAreaView style={styleComponents(Colors).SafeAreaView}>
+			<ThemedView style={styles(Colors).titleContainer}>
+				<ThemedText type="title">Welcome!</ThemedText>
+				<Emoji emoji="👋" />
+			</ThemedView>
+			<Photo source={dogPhotos[0]} onPress={() => openModal(dogPhotos[0])} />
+
+			<ShareCard
+				visible={modal}
+				onClose={closeModal}
+				selectedPhoto={selectedPhoto}
+			/>
 		</SafeAreaView>
 	);
 }
@@ -94,34 +108,20 @@ const styles = (colors: typeof Colors) =>
 		titleContainer: {
 			flexDirection: "row",
 			alignItems: "center",
-			gap: 8,
 		},
-		stepContainer: {
-			gap: 8,
-			marginBottom: 8,
-		},
-		reactLogo: {
-			height: 178,
-			width: 290,
-			bottom: 0,
-			left: 0,
-			position: "absolute",
-		},
+
 		modalOverlay: {
 			flex: 1,
-			justifyContent: "center",
-			alignItems: "center",
-			backgroundColor: "rgba(0, 0, 0, 0.8)", // Semi-transparent background
+			backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+			//justifyContent: "flex-end",
+			// Align content to bottom
 		},
 		modalContent: {
-			width: "80%",
+			width: "100%", // Full width of the screen
 			padding: 20,
 			backgroundColor: colors().background, // Use your theme color
-			borderRadius: 10,
+			borderTopLeftRadius: 10,
+			borderTopRightRadius: 10,
 			elevation: 5, // For Android shadow
-		},
-		closeButton: {
-			alignSelf: "flex-end",
-			marginBottom: 10,
 		},
 	});

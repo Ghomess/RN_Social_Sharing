@@ -5,7 +5,7 @@ import { styleComponents } from "@/styles/components";
 import { Colors } from "@/constants/Colors";
 import { Emoji } from "./Emoji";
 
-export const ShareablePhoto = ({
+export const Photo = ({
 	source,
 	onPress,
 }: {

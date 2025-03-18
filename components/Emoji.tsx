@@ -16,7 +16,7 @@ interface EmojiProps {
 }
 
 export function Emoji({ emoji, ...props }: EmojiProps) {
-	const rotationAnimation = useSharedValue(0);
+	/* const rotationAnimation = useSharedValue(0);
 
 	useEffect(() => {
 		rotationAnimation.value = withRepeat(
@@ -30,12 +30,16 @@ export function Emoji({ emoji, ...props }: EmojiProps) {
 
 	const animatedStyle = useAnimatedStyle(() => ({
 		transform: [{ rotate: `${rotationAnimation.value}deg` }],
-	}));
+	})); */
 
 	return (
-		<Animated.View style={animatedStyle}>
+		<>
+			{/* <Animated.View style={animatedStyle}>
 			<ThemedText style={[styles.text, props?.emojiStyle]}>{emoji}</ThemedText>
-		</Animated.View>
+		</Animated.View> */}
+
+			<ThemedText style={[styles.text, props?.emojiStyle]}>{emoji}</ThemedText>
+		</>
 	);
 }
 
