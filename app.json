@@ -10,7 +10,7 @@
 		"newArchEnabled": true,
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "com.ghomess.rn_social_sharing"
+			"bundleIdentifier": "com.ghomess.rnsocialsharing"
 		},
 		"android": {
 			"adaptiveIcon": {
@@ -26,8 +26,18 @@
 						}
 					],
 					"category": ["BROWSABLE", "DEFAULT"]
+				},
+				{
+					"action": "VIEW",
+					"data": [
+						{
+							"scheme": "rn_social_sharing"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
 				}
-			]
+			],
+			"package": "com.ghomess.rn_social_sharing"
 		},
 		"web": {
 			"bundler": "metro",
@@ -43,6 +53,18 @@
 					"imageWidth": 200,
 					"resizeMode": "contain",
 					"backgroundColor": "#ffffff"
+				}
+			],
+			[
+				"react-native-share",
+				{
+					"ios": ["fb", "instagram", "twitter", "tiktoksharesdk"],
+					"android": [
+						"com.facebook.katana",
+						"com.instagram.android",
+						"com.twitter.android",
+						"com.zhiliaoapp.musically"
+					]
 				}
 			]
 		],

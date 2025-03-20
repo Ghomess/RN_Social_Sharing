@@ -21,6 +21,8 @@ export const colors = {
 		dogBreedHighlight: "#F7D2C4",
 		photoOverlay: "#333333",
 		shareButton: "#4CAF50",
+		modalBG: "#fff",
+		shareOptionsBG: "#fff",
 	},
 
 	dark: {
@@ -37,6 +39,8 @@ export const colors = {
 		dogBreedHighlight: "#FFC080",
 		photoOverlay: "#666666",
 		shareButton: "#3E8E41",
+		modalBG: "#11181C",
+		shareOptionsBG: "#333333",
 	},
 };
 

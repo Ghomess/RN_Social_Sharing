@@ -18,7 +18,6 @@ import { useEffect, useState } from "react";
 
 import { fetchDogPhotos } from "@/api/fetchDogPhotos";
 
-import { onShare } from "@/features/share/onShareFunction";
 import { Photo } from "@/components/Photo";
 import { ShareCard } from "@/components/ShareCard";
 
@@ -30,14 +29,12 @@ export default function HomeScreen() {
 	useEffect(() => {
 		const getDogPhotos = async () => {
 			const response = await fetchDogPhotos();
-			console.log("Response:", response); // Add this log
 			setDogPhotos([...dogPhotos, response]);
 		};
 		getDogPhotos();
 	}, []);
 
 	const openModal = (photo: string) => {
-		console.log("openModal: ", photo);
 		setSelectedPhoto(photo);
 		setModal(true);
 	};
@@ -47,44 +44,6 @@ export default function HomeScreen() {
 		setSelectedPhoto(null);
 		setModal(false);
 	};
-	{
-		/* <SafeAreaView style={styleComponents(Colors).SafeAreaView}>
-			<ScrollView
-				style={styleComponents(Colors).ScrollViewContainer}
-				contentContainerStyle={
-					styleComponents(Colors).ScrollViewContentContainer
-				}
-			>
-				<ThemedView style={styles(Colors).titleContainer}>
-					<ThemedText type="title">Welcome!</ThemedText>
-					<Emoji emoji="👋" />
-				</ThemedView>
-
-				<Photo source={dogPhotos[0]} onPress={() => openModal(dogPhotos[0])} />
-				<ShareCard visible={modal} onClose={closeModal} />
-			</ScrollView>
-		</SafeAreaView> */
-	}
-	{
-		/* <TouchableOpacity
-				onPress={closeModal}
-				style={{
-					flex: 1,
-					position: "absolute",
-					display: modal ? "flex" : "none",
-					backgroundColor: "red",
-
-					bottom: 0,
-
-					width: "100%",
-					height: "100%",
-				}}
-			>
-				{selectedPhoto && (
-					<ShareCard selectedPhoto={selectedPhoto} onClose={closeModal} />
-				)}
-			</TouchableOpacity> */
-	}
 
 	return (
 		<SafeAreaView style={styleComponents(Colors).SafeAreaView}>

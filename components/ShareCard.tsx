@@ -66,7 +66,10 @@ export const ShareCard = ({
 
 					{/* Action Buttons */}
 					<View style={styles.actions}>
-						<TouchableOpacity style={styles.actionButton}>
+						<TouchableOpacity
+							style={styles.actionButton}
+							onPress={() => onShare({ url: selectedPhoto!, type: "download" })}
+						>
 							<Icon
 								name="download"
 								type="feather"
@@ -79,7 +82,7 @@ export const ShareCard = ({
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.actionButton}
-							onPress={() => onShare(selectedPhoto!)}
+							onPress={() => onShare({ url: selectedPhoto!, type: "link" })}
 						>
 							<Icon
 								name="link"
@@ -88,7 +91,12 @@ export const ShareCard = ({
 								size={22}
 							/>
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.actionButton}>
+						<TouchableOpacity
+							style={styles.actionButton}
+							onPress={() =>
+								onShare({ url: selectedPhoto!, type: "instagram" })
+							}
+						>
 							<Icon
 								name="instagram"
 								type="feather"

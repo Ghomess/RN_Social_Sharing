@@ -1,18 +1,58 @@
-import { Share } from "react-native";
+import Share, { Social } from "react-native-share";
+import RNFS from "react-native-fs";
+import { Alert } from "react-native";
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 
-export const onShare = async (url: string) => {
-	try {
-		const result = await Share.share({ message: "Cute dog: " + "\n" + url });
-		if (result.action === Share.sharedAction) {
-			if (result.activityType) {
-				console.log("result.activityType: ", result.activityType);
-			} else {
-				console.log("shared");
+interface onShareProps {
+	url: string;
+	type: string;
+}
+
+export const onShare = async ({ url, type }: onShareProps) => {
+	console.log("onShare: ", type);
+	switch (type) {
+		case "download":
+			try {
+				// Define file path
+				const filePath = `${RNFS.CachesDirectoryPath}/saved_image.png`;
+
+				// Remove "data:image/png;base64," if present
+				const base64Data = url.replace(/^data:image\/\w+;base64,/, "");
+
+				// Write file to local storage
+				await RNFS.writeFile(filePath, base64Data, "base64");
+
+				// Save to Camera Roll
+				await CameraRoll.save(`file://${filePath}`, { type: "photo" });
+
+				Alert.alert("Success", "Image saved to Camera Roll!");
+			} catch (error) {
+				console.error("Error saving image:", error);
+				Alert.alert("Error", "An error occurred while saving the image.");
 			}
-		} else if (result.action === Share.dismissedAction) {
-			console.log("dismissed");
-		}
-	} catch (error) {
-		console.log(error);
+			break;
+		case "link":
+			try {
+				await Share.open({
+					url: url,
+					type: "image/png",
+				});
+			} catch (error) {
+				console.log(error);
+			}
+			break;
+		case "instagram":
+			console.log("instagram");
+			try {
+				await Share.shareSingle({
+					social: Social.InstagramStories,
+					stickerImage: url,
+					type: "image/png",
+					appId: "com.ghomess.rnsocialsharing",
+				});
+			} catch (error) {
+				console.log(error);
+			}
+			break;
 	}
 };
