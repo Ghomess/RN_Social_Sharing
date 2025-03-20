@@ -1,74 +1,86 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {
+	StyleSheet,
+	ScrollView,
+	SafeAreaView,
+	TouchableOpacity,
+	Modal,
+	View,
+	Button,
+} from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Emoji } from "@/components/Emoji";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { styleComponents } from "@/styles/components";
+
+import { Colors } from "@/constants/Colors";
+import { useEffect, useState } from "react";
+
+import { fetchDogPhotos } from "@/api/fetchDogPhotos";
+
+import { Photo } from "@/components/Photo";
+import { ShareCard } from "@/components/ShareCard";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+	const [dogPhotos, setDogPhotos] = useState<Array<string>>([]);
+	const [modal, setModal] = useState(false);
+	const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+
+	useEffect(() => {
+		const getDogPhotos = async () => {
+			const response = await fetchDogPhotos();
+			setDogPhotos([...dogPhotos, response]);
+		};
+		getDogPhotos();
+	}, []);
+
+	const openModal = (photo: string) => {
+		setSelectedPhoto(photo);
+		setModal(true);
+	};
+
+	const closeModal = () => {
+		console.log("closeModal");
+		setSelectedPhoto(null);
+		setModal(false);
+	};
+
+	return (
+		<SafeAreaView style={styleComponents(Colors).SafeAreaView}>
+			<ThemedView style={styles(Colors).titleContainer}>
+				<ThemedText type="title">Welcome!</ThemedText>
+				<Emoji emoji="👋" />
+			</ThemedView>
+			<Photo source={dogPhotos[0]} onPress={() => openModal(dogPhotos[0])} />
+
+			<ShareCard
+				visible={modal}
+				onClose={closeModal}
+				selectedPhoto={selectedPhoto}
+			/>
+		</SafeAreaView>
+	);
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+const styles = (colors: typeof Colors) =>
+	StyleSheet.create({
+		titleContainer: {
+			flexDirection: "row",
+			alignItems: "center",
+		},
+
+		modalOverlay: {
+			flex: 1,
+			backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+			//justifyContent: "flex-end",
+			// Align content to bottom
+		},
+		modalContent: {
+			width: "100%", // Full width of the screen
+			padding: 20,
+			backgroundColor: colors().background, // Use your theme color
+			borderTopLeftRadius: 10,
+			borderTopRightRadius: 10,
+			elevation: 5, // For Android shadow
+		},
+	});
