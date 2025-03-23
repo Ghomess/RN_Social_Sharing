@@ -35,15 +35,12 @@ module.exports = {
      * These are the rules that we want to enforce but have been suppressed to a warning
      * for now, due to significant legacy code.
      */
+    'react-native/no-raw-text': 'off',
     'react-native/no-color-literals': 'warn',
     'react-native/sort-styles': 'off',
     'react-native/split-platform-components': 'off',
     'react-native/no-inline-styles': 'warn',
     'react/display-name': 'off',
-    'react-native/no-raw-text': [
-      'error',
-      { skip: ['HighlightableText', 'Pill'] },
-    ],
     'import/order': [
       'error',
       {

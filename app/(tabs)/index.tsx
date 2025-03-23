@@ -5,11 +5,11 @@ import { StyleSheet, SafeAreaView } from 'react-native';
 import { fetchDogPhotos } from '@/api/fetchDogPhotos';
 import { Emoji } from '@/components/Emoji';
 import { Photo } from '@/components/Photo';
-import { ShareCard } from '@/components/ShareCard';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { styleComponents } from '@/styles/components';
+import { ShareCard } from '@/components/ShareCard/ShareCard';
 
 export default function HomeScreen() {
   const [dogPhotos, setDogPhotos] = useState<Array<string>>([]);
@@ -19,7 +19,7 @@ export default function HomeScreen() {
   useEffect(() => {
     const getDogPhotos = async () => {
       const response = await fetchDogPhotos();
-      setDogPhotos([...dogPhotos, response]);
+      setDogPhotos((d) => [...d, response]);
     };
     getDogPhotos();
   }, []);

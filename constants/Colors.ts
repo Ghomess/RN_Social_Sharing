@@ -7,6 +7,7 @@ import { useColorScheme } from 'react-native';
 
 export const colors = {
   light: {
+    transparent: 'transparent',
     text: '#11181C',
     background: '#fff',
     tint: '#34C759',
@@ -15,14 +16,18 @@ export const colors = {
     tabIconSelected: '#34C759',
     buttonDefault: '#687076',
     buttonSelected: '#34C759',
-    dogBreedHighlight: '#F7D2C4',
+    buttonTextDefault: '#11181C',
+    buttonTextSelected: '#34C759',
     photoOverlay: '#333333',
     shareButton: '#4CAF50',
     modalBG: '#fff',
+    reviewCardBG: '#ECEDEE',
     shareOptionsBG: '#fff',
+    downloadButton: 'rgba(0, 0, 0, 0.1)',
+    link: '#34C759',
   },
-
   dark: {
+    transparent: 'transparent',
     text: '#ECEDEE',
     background: '#11181C',
     tint: '#8BC34A',
@@ -33,11 +38,13 @@ export const colors = {
     buttonSelected: '#8BC34A',
     buttonTextDefault: '#ECEDEE',
     buttonTextSelected: '#8BC34A',
-    dogBreedHighlight: '#FFC080',
     photoOverlay: '#666666',
     shareButton: '#3E8E41',
     modalBG: '#11181C',
+    reviewCardBG: '#333333',
     shareOptionsBG: '#333333',
+    downloadButton: 'rgba(0, 0, 0, 0.1)',
+    link: '#8BC34A',
   },
 };
 

@@ -44,6 +44,7 @@ export const onShare = async ({ url, type }: onShareProps) => {
       break;
     case 'instagram':
       console.log('instagram');
+      console.log(url);
       try {
         await Share.shareSingle({
           social: Social.InstagramStories,
