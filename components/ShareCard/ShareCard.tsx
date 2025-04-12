@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 
-import { useTheme } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
-import { captureRef } from 'react-native-view-shot';
 
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
@@ -13,6 +11,7 @@ import { ReviewCard } from './ReviewCard';
 
 import { onShare } from '@/features/share/onShareFunction';
 import { Colors } from '@/constants/Colors';
+import ViewShot from 'react-native-view-shot';
 
 export const ShareCard = ({
   visible,
@@ -25,16 +24,8 @@ export const ShareCard = ({
 }) => {
   const colors = Colors();
   const styles = themedStyles(Colors);
-  const ref = useRef<View>(null);
-  const [reviewCardUrl, setReviewCardUrl] = useState('');
 
-  useEffect(() => {
-    if (ref.current) {
-      captureRef(ref, {
-        result: 'data-uri',
-      }).then((uri) => setReviewCardUrl(uri));
-    }
-  }, []);
+  const [reviewCardUrl, setReviewCardUrl] = useState('');
 
   return (
     <Modal transparent visible={visible} animationType="slide">
@@ -48,7 +39,11 @@ export const ShareCard = ({
             <ThemedText style={styles.title}>Share</ThemedText>
           </View>
 
-          <ReviewCard viewRef={ref} selectedPhoto={selectedPhoto} />
+          {/* Review Card */}
+          <ReviewCard
+            selectedPhoto={selectedPhoto}
+            setReviewCardUrl={setReviewCardUrl}
+          />
           {/* Action Buttons */}
           <View style={styles.actions}>
             <TouchableOpacity
@@ -68,7 +63,9 @@ export const ShareCard = ({
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => onShare({ url: selectedPhoto!, type: 'link' })}>
+              onPress={() => {
+                onShare({ url: selectedPhoto!, type: 'link' });
+              }}>
               <Icon name="link" type="feather" color={colors.text} size={22} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -110,7 +107,7 @@ const themedStyles = (colors: typeof Colors) =>
       justifyContent: 'flex-end',
     },
     container: {
-      backgroundColor: colors().modalBG,
+      backgroundColor: colors().shareCardBG,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       padding: 15,

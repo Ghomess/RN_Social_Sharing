@@ -5,40 +5,66 @@ import { Icon } from 'react-native-elements';
 
 import { ThemedText } from '../ThemedText';
 import { Colors } from '@/constants/Colors';
+import { useCallback, useLayoutEffect, useRef } from 'react';
+import ViewShot from 'react-native-view-shot';
 
 export const ReviewCard = ({
-  viewRef,
   selectedPhoto,
+  setReviewCardUrl,
 }: {
   selectedPhoto: string | null | undefined;
-  viewRef: React.RefObject<View>;
+  setReviewCardUrl: (url: string) => void;
 }) => {
+  const ref = useRef<any>(null);
   const styles = themedStyles(Colors);
+  useLayoutEffect(() => {
+    console.log('Opening share card');
+
+    const result = async () => {
+      setTimeout(async () => {
+        if (ref.current) {
+          await ref.current
+            .capture()
+            .then((uri: string) => {
+              setReviewCardUrl(uri);
+
+              console.log('do something with ', uri);
+            })
+            .catch((error: any) => {
+              console.error('Error capturing review card:', error);
+            });
+        }
+      }, 500);
+    };
+    result();
+  }, []);
 
   return (
-    <View ref={viewRef} style={styles.reviewCard}>
-      <Image
-        source={{ uri: selectedPhoto ? selectedPhoto : '' }} // Replace with actual image
-        style={styles.poster}
-      />
-      <View style={styles.reviewContent}>
-        <Text style={styles.username}>Ghomes</Text>
-        <View style={styles.stars}>
-          {[...Array(5)].map((_, i) => (
-            <Icon
-              key={i}
-              name="star"
-              type="font-awesome"
-              color="#4CAF50"
-              size={18}
-              style={styles.icon}
-            />
-          ))}
-          <Icon name="heart" type="font-awesome" color="#4CAF50" size={18} />
+    <ViewShot ref={ref}>
+      <View style={styles.reviewCard}>
+        <Image
+          source={{ uri: selectedPhoto ? selectedPhoto : '' }} // Replace with actual image
+          style={styles.poster}
+        />
+        <View style={styles.reviewContent}>
+          <Text style={styles.username}>Ghomes</Text>
+          <View style={styles.stars}>
+            {[...Array(5)].map((_, i) => (
+              <Icon
+                key={i}
+                name="star"
+                type="font-awesome"
+                color="#4CAF50"
+                size={18}
+                style={styles.icon}
+              />
+            ))}
+            <Icon name="heart" type="font-awesome" color="#4CAF50" size={18} />
+          </View>
+          <ThemedText style={styles.reviewText}>Cute dog</ThemedText>
         </View>
-        <ThemedText style={styles.reviewText}>Cute dog</ThemedText>
       </View>
-    </View>
+    </ViewShot>
   );
 };
 

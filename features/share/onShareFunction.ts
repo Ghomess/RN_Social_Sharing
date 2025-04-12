@@ -48,6 +48,10 @@ export const onShare = async ({ url, type }: onShareProps) => {
       try {
         await Share.shareSingle({
           social: Social.InstagramStories,
+          title: 'Instagram Stories',
+          message: 'Check out this cool image!',
+          backgroundTopColor: '#ffffff',
+          backgroundBottomColor: '#ffffff',
           stickerImage: url,
           type: 'image/png',
           appId: 'com.ghomess.rnsocialsharing',

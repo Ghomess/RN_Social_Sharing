@@ -8,6 +8,7 @@ import { useColorScheme } from 'react-native';
 export const colors = {
   light: {
     transparent: 'transparent',
+    shareCardBG: '#fff',
     text: '#11181C',
     background: '#fff',
     tint: '#34C759',
@@ -28,6 +29,7 @@ export const colors = {
   },
   dark: {
     transparent: 'transparent',
+    shareCardBG: '#11181C',
     text: '#ECEDEE',
     background: '#11181C',
     tint: '#8BC34A',
