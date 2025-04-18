@@ -10,11 +10,13 @@ import { styleComponents } from '@/styles/components';
 export const Photo = ({
   source,
   onPress,
+  disableShareButton = false,
 }: {
   source: string;
   onPress: () => void;
+  disableShareButton?: boolean;
 }) => {
-  return (
+  return !disableShareButton ? (
     <ThemedView
       style={{
         flex: 1,
@@ -30,6 +32,20 @@ export const Photo = ({
           <Emoji emoji="🔗" emojiStyle={{ fontSize: 25, padding: 10 }} />
         </ThemedButton>
       </ThemedView>
+    </ThemedView>
+  ) : (
+    <ThemedView
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        alignSelf: 'center',
+        backgroundColor: Colors().background,
+      }}>
+      <ThemedButton style={styles.container} onPress={onPress}>
+        <Image source={{ uri: source }} style={styleComponents(Colors).Image} />
+      </ThemedButton>
     </ThemedView>
   );
 };

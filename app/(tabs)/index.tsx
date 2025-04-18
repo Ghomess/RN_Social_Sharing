@@ -9,12 +9,15 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { styleComponents } from '@/styles/components';
-import { ShareCard } from '@/components/ShareCard/ShareCard';
+import { useRouter } from 'expo-router';
+import * as Linking from 'expo-linking';
 
 export default function HomeScreen() {
+  const url = Linking.useURL();
+  console.log('url: ', url);
+
+  const router = useRouter();
   const [dogPhotos, setDogPhotos] = useState<Array<string>>([]);
-  const [modal, setModal] = useState(false);
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     const getDogPhotos = async () => {
@@ -24,28 +27,21 @@ export default function HomeScreen() {
     getDogPhotos();
   }, []);
 
-  const openModal = (photo: string) => {
-    setSelectedPhoto(photo);
-    setModal(true);
-  };
-
-  const closeModal = () => {
-    setSelectedPhoto(null);
-    setModal(false);
-  };
-
   return (
     <SafeAreaView style={styleComponents(Colors).SafeAreaView}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <Emoji emoji="👋" />
       </ThemedView>
-      <Photo source={dogPhotos[0]} onPress={() => openModal(dogPhotos[0])} />
-
-      <ShareCard
-        visible={modal}
-        onClose={closeModal}
-        selectedPhoto={selectedPhoto}
+      <Photo
+        source={dogPhotos[0]}
+        onPress={() =>
+          router.navigate({
+            pathname: '/(screens)/[dog]',
+            params: { dog: dogPhotos[0] },
+          })
+        }
+        disableShareButton={true}
       />
     </SafeAreaView>
   );

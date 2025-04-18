@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useColorScheme } from 'react-native';
 
@@ -13,16 +13,19 @@ import {
   ThemeProvider,
 } from '@react-navigation/native';
 import 'react-native-reanimated';
-
+import * as Linking from 'expo-linking';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const url = Linking.useURL();
   const colorScheme = useColorScheme();
+  const [externalUrl, setExternalUrl] = useState<string | null>(null);
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
+  // Effect for handling splash screen
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -33,15 +36,21 @@ export default function RootLayout() {
     return null;
   }
 
+  /*   useEffect(() => {
+    if (url) {
+      const match = url.match(/dog\/(.*)/);
+      setExternalUrl(match ? decodeURIComponent(match[1]) : null);
+    }
+  }, [url]);  */
+
   return (
-    <>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(screens)" />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
   );
 }

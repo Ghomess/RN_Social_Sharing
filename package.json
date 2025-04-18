@@ -1,5 +1,6 @@
 {
   "name": "rn_social_sharing",
+  "slug": "rn_social_sharing",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
