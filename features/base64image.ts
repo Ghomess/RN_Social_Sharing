@@ -1,7 +1,4 @@
-export const fetchDogPhotos = async (): Promise<string> => {
-  const response = await fetch('https://dog.ceo/api/breeds/image/random');
-  const data = await response.json();
-  const url = data.message;
+export const getBase64Image = async (url: string) => {
   const imageResponse = await fetch(url);
   const blob = await imageResponse.blob();
   const reader = new FileReader();

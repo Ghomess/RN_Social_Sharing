@@ -80,8 +80,12 @@ export const ShareCard = ({
                 size={22}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
-              <Icon name="x" type="feather" color={colors.text} size={22} />
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => {
+                onShare({ url: selectedPhoto!, type: 'image' });
+              }}>
+              <Icon name="image" type="feather" color={colors.text} size={22} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>
               <Icon

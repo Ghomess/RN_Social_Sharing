@@ -5,12 +5,19 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rn-social-sharing",
+    "scheme": "rnsocialsharing",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ghomess.rnsocialsharing"
+      "bundleIdentifier": "com.ghomess.rnsocialsharing",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["rnsocialsharing"]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -20,20 +27,10 @@
       "intentFilters": [
         {
           "action": "VIEW",
+          "autoVerify": true,
           "data": [
             {
-              "scheme": "rn_social_sharing",
-              "host": "dog",
-              "pathPrefix": "/"
-            }
-          ],
-          "category": ["BROWSABLE", "DEFAULT"]
-        },
-        {
-          "action": "VIEW",
-          "data": [
-            {
-              "scheme": "rn_social_sharing"
+              "scheme": "rnsocialsharing"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]

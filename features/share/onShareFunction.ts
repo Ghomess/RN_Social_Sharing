@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import RNFS from 'react-native-fs';
 import Share, { Social } from 'react-native-share';
+import { getBase64Image } from '../base64image';
 
 interface onShareProps {
   url: string;
@@ -10,7 +11,11 @@ interface onShareProps {
 }
 
 export const onShare = async ({ url, type }: onShareProps) => {
-  console.log('onShare: ', type);
+  const encodedUrl = encodeURIComponent(url);
+  const deepLink = `rnsocialsharing://dog/${encodedUrl}`;
+  const base64Image = await getBase64Image(url);
+  const imageType = url.slice(-3);
+
   switch (type) {
     case 'download':
       try {
@@ -18,7 +23,7 @@ export const onShare = async ({ url, type }: onShareProps) => {
         const filePath = `${RNFS.CachesDirectoryPath}/saved_image.png`;
 
         // Remove "data:image/png;base64," if present
-        const base64Data = url.replace(/^data:image\/\w+;base64,/, '');
+        const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
 
         // Write file to local storage
         await RNFS.writeFile(filePath, base64Data, 'base64');
@@ -32,18 +37,27 @@ export const onShare = async ({ url, type }: onShareProps) => {
         Alert.alert('Error', 'An error occurred while saving the image.');
       }
       break;
+    case 'image':
+      try {
+        await Share.open({
+          url: base64Image,
+          type: `image/${imageType}`,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+      break;
     case 'link':
       try {
         await Share.open({
-          url: url,
-          type: 'image/png',
+          url: deepLink,
+          type: 'text/plain',
         });
       } catch (error) {
         console.log(error);
       }
       break;
     case 'instagram':
-      console.log('instagram');
       console.log(url);
       try {
         await Share.shareSingle({
@@ -53,7 +67,7 @@ export const onShare = async ({ url, type }: onShareProps) => {
           backgroundTopColor: '#ffffff',
           backgroundBottomColor: '#ffffff',
           stickerImage: url,
-          type: 'image/png',
+          type: `image/${imageType}`,
           appId: 'com.ghomess.rnsocialsharing',
         });
       } catch (error) {

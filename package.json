@@ -1,7 +1,7 @@
 {
   "name": "rn_social_sharing",
   "slug": "rn_social_sharing",
-  "main": "expo-router/entry",
+  "main": "./index.tsx",
   "version": "1.0.0",
   "scripts": {
     "start": "watchman watch-del '/Users/Tiago.GOMES/Documents/RN_Social_Sharing' ; watchman watch-project '/Users/Tiago.GOMES/Documents/RN_Social_Sharing' ; expo start",
