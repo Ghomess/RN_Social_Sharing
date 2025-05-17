@@ -1,16 +1,25 @@
-import { StyleSheet, Pressable, type PressableProps } from 'react-native';
+import {
+  StyleSheet,
+  Pressable,
+  type PressableProps,
+  ViewStyle,
+} from 'react-native';
 
 import { Colors } from '@/constants/Colors';
 
-export function ThemedButton({ style, ...otherProps }: PressableProps) {
+interface ThemedButtonProps extends PressableProps {
+  style?: ViewStyle;
+}
+
+export function ThemedButton({ style, ...otherProps }: ThemedButtonProps) {
   const colors = Colors();
 
   return (
     <Pressable
       style={({ pressed }) => ({
         ...styles.container,
+        ...(style || {}), // Spread the passed style if it exists
         backgroundColor: pressed ? colors.buttonSelected : colors.buttonDefault,
-        style, // Modified line
       })}
       {...otherProps}>
       {otherProps.children}

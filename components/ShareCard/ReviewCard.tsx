@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
@@ -7,6 +7,7 @@ import { ThemedText } from '../ThemedText';
 import { Colors } from '@/constants/Colors';
 import { useCallback, useLayoutEffect, useRef } from 'react';
 import ViewShot from 'react-native-view-shot';
+import FastImageWrapper from '../FastImageWrapper';
 
 export const ReviewCard = ({
   selectedPhoto,
@@ -42,8 +43,8 @@ export const ReviewCard = ({
   return (
     <ViewShot ref={ref}>
       <View style={styles.reviewCard}>
-        <Image
-          source={{ uri: selectedPhoto ? selectedPhoto : '' }} // Replace with actual image
+        <FastImageWrapper
+          source={{ uri: selectedPhoto ? selectedPhoto : '' }}
           style={styles.poster}
         />
         <View style={styles.reviewContent}>

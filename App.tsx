@@ -7,7 +7,6 @@ import {
   LinkingOptions,
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigatorScreenParams } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -47,10 +46,9 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
         },
       },
-      NotFound: '*',
     },
   },
-  // Optional: Add a custom getInitialURL function to handle deep links
+
   async getInitialURL() {
     // First, check if the app was opened from a deep link
     const url = await Linking.getInitialURL();

@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Emoji } from './Emoji';
 import { ThemedButton } from './ThemedButton';
@@ -6,6 +6,7 @@ import { ThemedView } from './ThemedView';
 
 import { Colors } from '@/constants/Colors';
 import { styleComponents } from '@/styles/components';
+import FastImageWrapper from './FastImageWrapper';
 
 export const Photo = ({
   source,
@@ -27,7 +28,10 @@ export const Photo = ({
         backgroundColor: Colors().background,
       }}>
       <ThemedView style={styles.container}>
-        <Image source={{ uri: source }} style={styleComponents(Colors).Image} />
+        <FastImageWrapper
+          source={{ uri: source }}
+          style={styleComponents(Colors).Image}
+        />
         <ThemedButton onPress={onPress} style={styles.share}>
           <Emoji emoji="🔗" emojiStyle={{ fontSize: 25, padding: 10 }} />
         </ThemedButton>
@@ -44,7 +48,10 @@ export const Photo = ({
         backgroundColor: Colors().background,
       }}>
       <ThemedButton style={styles.container} onPress={onPress}>
-        <Image source={{ uri: source }} style={styleComponents(Colors).Image} />
+        <FastImageWrapper
+          source={{ uri: source }}
+          style={styleComponents(Colors).Image}
+        />
       </ThemedButton>
     </ThemedView>
   );

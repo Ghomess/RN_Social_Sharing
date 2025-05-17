@@ -12,7 +12,7 @@ interface onShareProps {
 
 export const onShare = async ({ url, type }: onShareProps) => {
   const encodedUrl = encodeURIComponent(url);
-  const deepLink = `rnsocialsharing://dog/${encodedUrl}`;
+  const deepLink = `rn-social-sharing://dog/${encodedUrl}`;
   const base64Image = await getBase64Image(url);
   const imageType = url.slice(-3);
 
@@ -22,7 +22,7 @@ export const onShare = async ({ url, type }: onShareProps) => {
         // Define file path
         const filePath = `${RNFS.CachesDirectoryPath}/saved_image.png`;
 
-        // Remove "data:image/png;base64," if present
+        //Extract base64 data
         const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
 
         // Write file to local storage

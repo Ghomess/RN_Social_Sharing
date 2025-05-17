@@ -3,12 +3,12 @@ import {
   StyleSheet,
   SafeAreaView,
   Pressable,
-  Image,
   ActivityIndicator,
   FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import FastImageWrapper from '@/components/FastImageWrapper';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -24,7 +24,6 @@ type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const [dogPhotos, setDogPhotos] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     fetchDogPhotos();
@@ -32,7 +31,6 @@ export default function HomeScreen() {
 
   const fetchDogPhotos = async () => {
     try {
-      setLoading(true);
       const response = await fetch('https://random.dog/doggos');
       const data = await response.json();
       const filteredData = data.filter(
@@ -41,11 +39,9 @@ export default function HomeScreen() {
           photo.endsWith('.jpeg') ||
           photo.endsWith('.png')
       );
-      setDogPhotos(filteredData.slice(0, 10));
+      setDogPhotos(filteredData);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -60,9 +56,13 @@ export default function HomeScreen() {
     <Pressable
       style={styles.photoContainer}
       onPress={() => handleDogPress(`https://random.dog/${item}`)}>
-      <Image
-        source={{ uri: `https://random.dog/${item}` }}
-        style={styles.photo}
+      <FastImageWrapper
+        source={{
+          uri: `https://random.dog/${item}`,
+          priority: 'high',
+          cache: 'immutable',
+        }}
+        fallback={true}
       />
     </Pressable>
   );
@@ -74,7 +74,6 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={styles.container}>
-        {loading && <ActivityIndicator size="large" color="white" />}
         <FlatList
           data={dogPhotos}
           renderItem={renderItem}
@@ -109,9 +108,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 8,
     overflow: 'hidden',
-  },
-  photo: {
-    width: '100%',
-    height: '100%',
   },
 });
