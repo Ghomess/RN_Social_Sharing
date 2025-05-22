@@ -1,41 +1,37 @@
-import { StyleSheet, Pressable, type PressableProps } from "react-native";
+import {
+  StyleSheet,
+  Pressable,
+  type PressableProps,
+  ViewStyle,
+} from 'react-native';
 
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { ThemedText } from "./ThemedText";
-import { Colors } from "@/constants/Colors";
-import { useState } from "react";
+import { Colors } from '@/constants/Colors';
 
-export function ThemedButton({ style, ...otherProps }: PressableProps) {
-	const colors = Colors();
-
-	const [pressed, setPressed] = useState(false);
-
-	return (
-		<Pressable
-			style={({ pressed }) => [
-				styles(Colors).container,
-				{
-					backgroundColor: pressed
-						? colors.buttonSelected
-						: colors.buttonDefault,
-				},
-				style,
-			]}
-			onPressIn={() => setPressed(true)}
-			onPressOut={() => setPressed(false)}
-			{...otherProps}
-		>
-			{otherProps.children}
-		</Pressable>
-	);
+interface ThemedButtonProps extends PressableProps {
+  style?: ViewStyle;
 }
 
-const styles = (colors: typeof Colors) =>
-	StyleSheet.create({
-		container: {
-			justifyContent: "center",
-			alignItems: "center",
-			borderRadius: 100,
-			margin: 10,
-		},
-	});
+export function ThemedButton({ style, ...otherProps }: ThemedButtonProps) {
+  const colors = Colors();
+
+  return (
+    <Pressable
+      style={({ pressed }) => ({
+        ...styles.container,
+        ...(style || {}), // Spread the passed style if it exists
+        backgroundColor: pressed ? colors.buttonSelected : colors.buttonDefault,
+      })}
+      {...otherProps}>
+      {otherProps.children}
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    margin: 10,
+  },
+});

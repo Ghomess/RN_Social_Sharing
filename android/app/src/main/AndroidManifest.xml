@@ -55,9 +55,9 @@
       </intent-filter>
       <intent-filter data-generated="true">
         <action android:name="android.intent.action.VIEW"/>
-        <data android:scheme="rn_social_sharing"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <category android:name="android.intent.category.DEFAULT"/>
+        <data android:scheme="rn_social_sharing"/>
       </intent-filter>
     </activity>
   </application>
