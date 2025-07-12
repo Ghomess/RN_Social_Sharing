@@ -1,5 +1,6 @@
 package com.ghomess.rn_social_sharing
 
+import com.shopify.reactnativeperformance.ReactNativePerformance;
 import android.app.Application
 import android.content.res.Configuration
 
@@ -41,6 +42,7 @@ class MainApplication : Application(), ReactApplication {
     get() = ReactNativeHostWrapper.createReactHost(applicationContext, reactNativeHost)
 
   override fun onCreate() {
+    ReactNativePerformance.onAppStarted();
     super.onCreate()
     SoLoader.init(this, OpenSourceMergedSoMapping)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {

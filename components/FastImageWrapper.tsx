@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
-import { StyleProp, StyleSheet, ActivityIndicator, View } from 'react-native';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  StyleProp,
+  StyleSheet,
+  ActivityIndicator,
+  View,
+  InteractionManager,
+} from 'react-native';
 import FastImage, {
   FastImageProps,
-  ResizeMode,
-  OnProgressEvent,
-  OnLoadEvent,
   ImageStyle,
   Priority,
 } from 'react-native-fast-image';
 
-type FastImageWrapperProps = FastImageProps & {
-  priority?: Priority;
+import { Colors } from '@/constants/Colors';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { useRenderTiming } from '@/hooks/useRenderTiming';
+/* import { Image, ImageProps, ImageStyle } from 'expo-image'; */
+
+type FastImageWrapperProps = FastImageProps /* ImageProps */ & {
+  index: number;
+  priority?: Priority /* string */;
+  debugLabel?: string;
   style?: StyleProp<ImageStyle>;
-  loadingIndicatorColor?: string; // Optional color for the ActivityIndicator
+  loadingIndicatorColor?: string;
 };
 
 export default function FastImageWrapper({
+  index,
   source,
   priority = 'normal',
   defaultSource,
@@ -28,68 +45,103 @@ export default function FastImageWrapper({
   onLoadEnd,
   fallback = true,
   tintColor,
+
   ...otherProps
 }: FastImageWrapperProps) {
-  const [loading, setLoading] = useState(false);
+  const colors = Colors();
+  const [loading, setLoading] = useState(true);
+  const [loadStartTime, setLoadStartTime] = useState<number | null>(null);
 
-  const handleLoadStart = () => {
+  const handleLoadStart = useCallback(() => {
+    setLoadStartTime(Date.now());
     setLoading(true);
     onLoadStart?.();
-  };
+  }, [onLoadStart]);
 
-  const handleLoad = (event: OnLoadEvent) => {
+  useRenderTiming('FastImageWrapper');
+  useLayoutEffect(() => {
+    if (loading) {
+      const start = performance.now();
+      requestAnimationFrame(() => {
+        const time = performance.now() - start;
+        console.log(
+          `⏳ Skeleton appeared in ${time.toFixed(2)} ms, index: ${index}`
+        );
+      });
+    }
+  }, [loading]);
+
+  const handleError = useCallback(() => {
     setLoading(false);
-    onLoad?.(event);
-  };
-  const handleLoadEnd = () => {
+    onError?.();
+  }, [onError]);
+
+  const handleLoadEnd = useCallback(() => {
     setLoading(false);
     onLoadEnd?.();
-  };
+  }, [onLoadEnd]);
 
-  const sourceWithPriority = {
-    ...(source as object),
-    priority: priority,
-  };
+  const sourceWithPriority = useMemo(
+    () => ({
+      ...(source as object),
+      priority,
+    }),
+    [source, priority]
+  );
+
+  const SkeletonComponent = useMemo(() => {
+    return (
+      loading && (
+        <SkeletonPlaceholder
+          backgroundColor={colors.tabIconSelected}
+          highlightColor={colors.shareOptionsBG}
+          speed={1000}
+          direction="right">
+          <SkeletonPlaceholder.Item width={'100%'} height={'100%'} />
+        </SkeletonPlaceholder>
+      )
+    );
+  }, [loading]);
 
   return (
-    <>
+    <View style={styles.defaultContainer}>
+      {SkeletonComponent}
       <FastImage
-        style={style} // Make FastImage fill the container
+        style={loading ? styles.hiddenImage : style}
         source={sourceWithPriority}
         defaultSource={defaultSource}
         resizeMode={resizeMode}
         onLoadStart={handleLoadStart}
         onProgress={onProgress}
-        onLoad={handleLoad}
-        onError={onError}
+        onLoad={onLoad}
+        onError={handleError}
         onLoadEnd={handleLoadEnd}
         fallback={fallback}
         tintColor={tintColor}
         {...otherProps}
       />
-      {loading && (
-        <ActivityIndicator
-          size="large"
-          color="white"
-          style={styles.loadingIndicator}
-        />
-      )}
-    </>
+      {/* <Image
+        source={source.uri}
+        style={loading ? styles.hiddenImage : style}
+        onLoadStart={handleLoadStart}
+        onLoadEnd={handleLoadEnd}
+        onError={handleError}
+        {...otherProps}
+      /> */}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  defaultContainer: {
+    overflow: 'hidden',
+  },
   defaultStyle: {
     width: '100%',
     height: '100%',
   },
-  loadingIndicator: {
+  hiddenImage: {
+    opacity: 0,
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

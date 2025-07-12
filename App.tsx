@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import {
   NavigationContainer,
@@ -16,7 +16,15 @@ import TabNavigator from './navigation/TabNavigator';
 import ScreensNavigator from './navigation/ScreensNavigator';
 import NotFoundScreen from './screens/NotFoundScreen';
 import { RootStackParamList } from './dataTypes/navigation';
+import {
+  PerformanceProfiler,
+  RenderPassReport,
+  useStartProfiler,
+} from '@shopify/react-native-performance';
 
+if (typeof performance !== 'undefined' && performance.mark) {
+  performance.mark('app_start');
+}
 SplashScreen.preventAutoHideAsync();
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -72,12 +80,67 @@ const linking: LinkingOptions<RootStackParamList> = {
 };
 
 export default function App() {
+  /* useStartProfiler(); */
   const colorScheme = useColorScheme();
 
   // Load fonts
   const [loaded] = useFonts({
     SpaceMono: require('./assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  const onReportPrepared = useCallback((report: RenderPassReport) => {
+    const {
+      sourceScreen,
+      destinationScreen,
+      flowInstanceId,
+      timeToRenderMillis,
+      timeToBootJsMillis,
+      timeToConsumeTouchEventMillis,
+      resourceAcquisitionStatus,
+      interactive,
+      timeToAbortMillis,
+    } = report;
+
+    if (timeToAbortMillis) {
+      console.log(
+        `❌ Render aborted (${destinationScreen}), after ${timeToAbortMillis.toFixed(2)} ms`
+      );
+      return;
+    }
+
+    console.log(`🎯 Interactive: ${interactive ? 'Yes' : 'No'}`);
+    console.log(
+      `📱 RenderPassReport for ${sourceScreen} → ${destinationScreen}`
+    );
+    console.log(`🆔 Flow: ${flowInstanceId}`);
+    console.log(`🕒 Render Time: ${timeToRenderMillis?.toFixed(2)} ms`);
+
+    if (timeToBootJsMillis !== undefined) {
+      console.log(`❄️ JS Cold Boot Time: ${timeToBootJsMillis.toFixed(2)} ms`);
+    }
+
+    if (timeToConsumeTouchEventMillis !== undefined) {
+      console.log(
+        `👆 Touch Trigger Delay: ${timeToConsumeTouchEventMillis.toFixed(2)} ms`
+      );
+    }
+
+    console.log(
+      `⏱️ Resource Load Time: ${resourceAcquisitionStatus.totalTimeMillis.toFixed(2)} ms`
+    );
+
+    Object.entries(resourceAcquisitionStatus.components).forEach(
+      ([name, status]) => {
+        if (status.status === 'completed') {
+          console.log(`✅ ${name}: ${status.durationMillis.toFixed(2)} ms`);
+        } else if (status.status === 'cancelled') {
+          console.log(`🚫 ${name}: Cancelled`);
+        } else {
+          console.log(`⏳ ${name}: Still Ongoing`);
+        }
+      }
+    );
+  }, []);
 
   // Effect for handling splash screen
   useEffect(() => {
@@ -91,15 +154,17 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-      linking={linking}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Tabs" component={TabNavigator} />
-        <Stack.Screen name="Screens" component={ScreensNavigator} />
-        <Stack.Screen name="NotFound" component={NotFoundScreen} />
-      </Stack.Navigator>
-      <StatusBar style="auto" />
-    </NavigationContainer>
+    <PerformanceProfiler onReportPrepared={onReportPrepared}>
+      <NavigationContainer
+        theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        linking={linking}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Tabs" component={TabNavigator} />
+          <Stack.Screen name="Screens" component={ScreensNavigator} />
+          <Stack.Screen name="NotFound" component={NotFoundScreen} />
+        </Stack.Navigator>
+        <StatusBar style="auto" />
+      </NavigationContainer>
+    </PerformanceProfiler>
   );
 }
